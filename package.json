@@ -1,0 +1,185 @@
+{
+  "name": "shader-studio",
+  "version": "0.1.0",
+  "description": "Author, publish and place WebGL shader looks from the Payload CMS admin. Looks are used like media: a visual slot references one, the site renders what is published.",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "payload",
+    "payloadcms",
+    "payload-plugin",
+    "shader",
+    "webgl",
+    "three",
+    "react-three-fiber",
+    "glsl"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milesroxas/shader-studio.git"
+  },
+  "bugs": "https://github.com/milesroxas/shader-studio/issues",
+  "homepage": "https://github.com/milesroxas/shader-studio#readme",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./client": {
+      "import": "./src/exports/client.ts",
+      "types": "./src/exports/client.ts",
+      "default": "./src/exports/client.ts"
+    },
+    "./types": {
+      "import": "./src/exports/types.ts",
+      "types": "./src/exports/types.ts",
+      "default": "./src/exports/types.ts"
+    },
+    "./effects/wash": {
+      "import": "./src/effects/wash/index.ts",
+      "types": "./src/effects/wash/index.ts",
+      "default": "./src/effects/wash/index.ts"
+    },
+    "./effects/wash/client": {
+      "import": "./src/effects/wash/client.tsx",
+      "types": "./src/effects/wash/client.tsx",
+      "default": "./src/effects/wash/client.tsx"
+    }
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm clean && pnpm build:types && pnpm build:swc && pnpm build:css",
+    "build:css": "tailwindcss -i ./src/styles/studio.css -o ./dist/styles/studio.css --minify",
+    "build:swc": "swc ./src -d ./dist --config-file .swcrc --strip-leading-paths",
+    "build:types": "tsc -p tsconfig.build.json --outDir dist",
+    "clean": "rimraf dist *.tsbuildinfo",
+    "dev": "next dev dev --turbo -p 3002",
+    "dev:generate-importmap": "pnpm dev:payload generate:importmap",
+    "dev:generate-types": "pnpm dev:payload generate:types",
+    "dev:payload": "cross-env PAYLOAD_CONFIG_PATH=./dev/payload.config.ts payload",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "generate:importmap": "pnpm dev:generate-importmap",
+    "generate:types": "pnpm dev:generate-types",
+    "lint": "eslint",
+    "lint:fix": "eslint ./src --fix",
+    "prepublishOnly": "pnpm build",
+    "test": "pnpm test:unit && pnpm test:int",
+    "test:e2e": "playwright test",
+    "test:int": "vitest run --project int",
+    "test:unit": "vitest run --project unit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tabler/icons-react": "^3.49.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "radix-ui": "^1.8.1",
+    "tailwind-merge": "^3.7.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@payloadcms/db-sqlite": "3.92.0",
+    "@payloadcms/eslint-config": "3.28.0",
+    "@payloadcms/next": "3.92.0",
+    "@payloadcms/richtext-lexical": "3.92.0",
+    "@payloadcms/ui": "3.92.0",
+    "@playwright/test": "1.63.0",
+    "@react-three/fiber": "^9.8.2",
+    "@swc-node/register": "1.10.9",
+    "@swc/cli": "0.8.1",
+    "@swc/core": "1.16.20",
+    "@tailwindcss/cli": "^4.3.3",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "24.12.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/three": "^0.186.0",
+    "copyfiles": "2.4.1",
+    "cross-env": "10.1.0",
+    "drizzle-orm": "^0.44.0",
+    "eslint": "^9.23.0",
+    "eslint-config-next": "16.4.3",
+    "graphql": "^16.8.1",
+    "next": "16.4.3",
+    "oxfmt": "^0.74.0",
+    "payload": "3.92.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "rimraf": "^6.0.1",
+    "sharp": "^0.35.4",
+    "tailwindcss": "^4.3.3",
+    "three": "^0.186.1",
+    "tw-animate-css": "^1.4.0",
+    "typescript": "^6.0.3",
+    "vitest": "5.0.5"
+  },
+  "peerDependencies": {
+    "@payloadcms/ui": "^3.82.0",
+    "@react-three/fiber": "^9.0.0",
+    "drizzle-orm": ">=0.36.0",
+    "payload": "^3.82.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sharp": ">=0.32.0",
+    "three": ">=0.160.0"
+  },
+  "peerDependenciesMeta": {
+    "drizzle-orm": {
+      "optional": true
+    },
+    "sharp": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=20.9.0",
+    "pnpm": "^9 || ^10 || ^11"
+  },
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./client": {
+        "import": "./dist/exports/client.js",
+        "types": "./dist/exports/client.d.ts",
+        "default": "./dist/exports/client.js"
+      },
+      "./types": {
+        "import": "./dist/exports/types.js",
+        "types": "./dist/exports/types.d.ts",
+        "default": "./dist/exports/types.js"
+      },
+      "./effects/wash": {
+        "import": "./dist/effects/wash/index.js",
+        "types": "./dist/effects/wash/index.d.ts",
+        "default": "./dist/effects/wash/index.js"
+      },
+      "./effects/wash/client": {
+        "import": "./dist/effects/wash/client.js",
+        "types": "./dist/effects/wash/client.d.ts",
+        "default": "./dist/effects/wash/client.js"
+      }
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
+  },
+  "packageManager": "pnpm@10.28.0"
+}

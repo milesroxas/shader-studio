@@ -1,0 +1,248 @@
+'use client'
+
+import { cva, type VariantProps } from 'class-variance-authority'
+import { Slider as SliderPrimitive } from 'radix-ui'
+import * as React from 'react'
+
+import { cn } from './cn.js'
+
+export type SliderMark = {
+  /** `default` sits under the track; `zero` crosses it, the origin of a signed range. */
+  kind?: 'default' | 'zero'
+  value: number
+}
+
+/**
+ * The fill ink. `changed` is the one visual a value uses to say it departs
+ * from its default; everything else about the row stays the same.
+ */
+const sliderRangeVariants = cva(
+  // A disabled slider dims its fill along with its track: a full-contrast
+  // fill under a muted label reads as an active control that stopped working.
+  'absolute h-full rounded-full group-data-[disabled]/slider:bg-muted-foreground/30',
+  {
+    defaultVariants: {
+      variant: 'default',
+    },
+    variants: {
+      variant: {
+        changed: 'bg-primary',
+        default: 'bg-foreground',
+      },
+    },
+  },
+)
+
+/**
+ * How far past a limit the thumb follows the pointer: the further out, the
+ * less it moves, so the edge reads as "there is nothing more here" instead of
+ * as a frozen control. Apple's rubber-band with the 0.55 constant.
+ */
+const rubberband = (overshoot: number, dimension: number, constant = 0.55) =>
+  (overshoot * dimension * constant) / (dimension + constant * Math.abs(overshoot))
+
+const percent = (value: number, min: number, max: number) =>
+  `${((value - min) / (max - min || 1)) * 100}%`
+
+/**
+ * Slider: a 4px track, a fill and an always-visible thumb on Radix, which
+ * brings pointer capture, closest-thumb grabs, arrow, Home and End keys and
+ * a range pair that cannot cross. What is added on top is the feel:
+ *
+ * - The thumb grows under the pointer and again while dragging, when a value
+ *   bubble rides above it (`formatValue` turns the bubble on).
+ * - `marks` draw ticks on the track (a parameter's default, the zero of a
+ *   signed range); while dragging the thumb snaps to one within `snapRadius`
+ *   px, a magnet that lets a default be hit by hand.
+ * - `origin` fills from a point inside the range instead of from the left,
+ *   so a signed value reads as a departure from zero.
+ * - Past a limit the thumb rubber-bands and springs home on release. A click
+ *   on the track eases the thumb to the point instead of teleporting it; a
+ *   drag tracks 1:1 with no easing in the way.
+ *
+ * Motion is the CSS `scale` and `translate` properties, so it composes with
+ * the transform Radix owns, and reduced motion drops the travel and keeps
+ * the state changes.
+ */
+function Slider({
+  className,
+  defaultValue,
+  formatValue,
+  invalid,
+  marks,
+  max = 100,
+  min = 0,
+  onLostPointerCapture,
+  onPointerCancel,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
+  onValueChange,
+  origin,
+  snapRadius = 4,
+  style,
+  thumbLabels,
+  value,
+  variant,
+  ...props
+}: {
+  /** Text for the bubble above a thumb while it is dragged. Omit for no bubble. */
+  formatValue?: (value: number) => string
+  /** The value the thumbs hold fails validation elsewhere (a typed range pair that crosses). */
+  invalid?: boolean
+  marks?: SliderMark[]
+  /** Fill from this value instead of from `min`. */
+  origin?: number
+  /** Pointer distance, in px, within which the thumb snaps to a mark. */
+  snapRadius?: number
+  /** Accessible name per thumb, in order. A thumb is the `slider` role, so a label on the root never reaches it. */
+  thumbLabels?: string[]
+} & React.ComponentProps<typeof SliderPrimitive.Root> &
+  VariantProps<typeof sliderRangeVariants>) {
+  const [internal, setInternal] = React.useState<number[]>(() =>
+    Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min],
+  )
+  const values = Array.isArray(value) ? value : internal
+  const [dragging, setDragging] = React.useState(false)
+  const [overshoot, setOvershoot] = React.useState(0)
+  // The track bounds double as the "a drag is live" flag for the pointer
+  // handlers, which can fire before the state above has re-rendered.
+  const bounds = React.useRef<DOMRect | null>(null)
+  const root = React.useRef<HTMLSpanElement>(null)
+
+  const change = (next: number[]) => {
+    let snapped = next
+    if (bounds.current && marks?.length) {
+      const radius = (snapRadius / bounds.current.width) * (max - min)
+      snapped = next.map((v) => {
+        const mark = marks.find((m) => Math.abs(m.value - v) <= radius)
+        return mark ? mark.value : v
+      })
+    }
+    if (!Array.isArray(value)) {
+      setInternal(snapped)
+    }
+    onValueChange?.(snapped)
+  }
+
+  const settle = () => {
+    setDragging(false)
+    setOvershoot(0)
+    bounds.current = null
+  }
+
+  return (
+    <SliderPrimitive.Root
+      className={cn(
+        'group/slider relative flex w-full touch-none items-center select-none data-[orientation=horizontal]:h-9 data-[orientation=horizontal]:min-w-20',
+        // The track click and the keyboard step ease the thumb to its point;
+        // a drag switches the easing off so the thumb stays on the pointer.
+        '[&>span:has(>[data-slot=slider-thumb])]:[transition:left_300ms_var(--ease-out-quint)] data-[dragging]:[&>span:has(>[data-slot=slider-thumb])]:transition-none motion-reduce:[&>span:has(>[data-slot=slider-thumb])]:transition-none',
+        className,
+      )}
+      data-dragging={dragging || undefined}
+      data-invalid={invalid || undefined}
+      data-slot="slider"
+      data-variant={variant ?? 'default'}
+      defaultValue={defaultValue}
+      max={max}
+      min={min}
+      onLostPointerCapture={(event) => {
+        onLostPointerCapture?.(event)
+        settle()
+      }}
+      onPointerCancel={(event) => {
+        onPointerCancel?.(event)
+        settle()
+      }}
+      onPointerDown={(event) => {
+        onPointerDown?.(event)
+        if (event.defaultPrevented || event.button !== 0) {
+          return
+        }
+        bounds.current = root.current?.getBoundingClientRect() ?? null
+        setDragging(true)
+      }}
+      onPointerMove={(event) => {
+        onPointerMove?.(event)
+        const rect = bounds.current
+        if (!rect) {
+          return
+        }
+        const over =
+          event.clientX < rect.left
+            ? event.clientX - rect.left
+            : event.clientX > rect.right
+              ? event.clientX - rect.right
+              : 0
+        setOvershoot(over ? rubberband(over, rect.width) : 0)
+      }}
+      onPointerUp={(event) => {
+        onPointerUp?.(event)
+        settle()
+      }}
+      onValueChange={change}
+      ref={root}
+      style={{ ...style, '--slider-overshoot': `${overshoot}px` } as React.CSSProperties}
+      value={value}
+      {...props}
+    >
+      <SliderPrimitive.Track
+        className="relative h-1 w-full grow overflow-visible rounded-full bg-muted group-data-[disabled]/slider:bg-muted/60"
+        data-slot="slider-track"
+      >
+        {origin === undefined || values.length !== 1 ? (
+          <SliderPrimitive.Range
+            className={cn(sliderRangeVariants({ variant }))}
+            data-slot="slider-range"
+          />
+        ) : (
+          <span
+            className={cn(sliderRangeVariants({ variant }))}
+            data-slot="slider-range"
+            style={{
+              left: percent(Math.min(origin, values[0]), min, max),
+              right: `calc(100% - ${percent(Math.max(origin, values[0]), min, max)})`,
+            }}
+          />
+        )}
+        {marks?.map((mark) => (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -translate-x-1/2 rounded-full bg-muted-foreground/60 data-[kind=default]:top-full data-[kind=default]:mt-[3px] data-[kind=default]:h-[3px] data-[kind=default]:w-[3px] data-[kind=zero]:-top-[3px] data-[kind=zero]:h-2.5 data-[kind=zero]:w-0.5"
+            data-kind={mark.kind ?? 'default'}
+            data-slot="slider-mark"
+            key={`${mark.kind ?? 'default'}:${mark.value}`}
+            style={{ left: percent(mark.value, min, max) }}
+          />
+        ))}
+      </SliderPrimitive.Track>
+      {values.map((thumbValue, index) => (
+        <SliderPrimitive.Thumb
+          aria-label={thumbLabels?.[index]}
+          className={cn(
+            'relative block size-3.5 shrink-0 rounded-full bg-foreground shadow-[0_1px_2px_rgb(0_0_0/0.4),0_0_0_1px_rgb(0_0_0/0.15)] outline-none',
+            // Grow under the pointer, more in the hand; slide with the
+            // rubber-band offset past a limit and spring back on release.
+            'translate-x-(--slider-overshoot) [transition:scale_150ms_var(--ease-out-quint),translate_250ms_var(--ease-out-quint)] group-hover/slider:scale-[1.29] group-data-[dragging]/slider:scale-[1.43] group-data-[dragging]/slider:[transition:scale_150ms_var(--ease-out-quint)] group-data-[disabled]/slider:scale-[0.71] group-data-[disabled]/slider:bg-input group-data-[disabled]/slider:shadow-none group-data-[invalid]/slider:bg-destructive motion-reduce:transition-none',
+            'focus-visible:ring-[3px] focus-visible:ring-ring/50',
+          )}
+          data-slot="slider-thumb"
+          key={index}
+        >
+          {formatValue && (
+            <span
+              aria-hidden
+              className="pointer-events-none absolute bottom-full left-1/2 mb-2 origin-bottom -translate-x-1/2 scale-95 rounded-sm bg-foreground px-1.5 py-0.5 font-mono text-[11px] leading-4 whitespace-nowrap text-background opacity-0 transition-[opacity,scale] duration-150 ease-out-quint group-data-[dragging]/slider:scale-100 group-data-[dragging]/slider:opacity-100 motion-reduce:scale-100 motion-reduce:transition-none"
+              data-slot="slider-bubble"
+            >
+              {formatValue(thumbValue)}
+            </span>
+          )}
+        </SliderPrimitive.Thumb>
+      ))}
+    </SliderPrimitive.Root>
+  )
+}
+
+export { Slider, sliderRangeVariants }

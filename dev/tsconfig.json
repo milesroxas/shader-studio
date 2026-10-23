@@ -1,0 +1,28 @@
+{
+  "extends": "../tsconfig.json",
+  "exclude": [],
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.mjs",
+    "**/*.cjs",
+    "**/*.ts",
+    "**/*.tsx",
+    "../src/**/*.ts",
+    "../src/**/*.tsx",
+    "next.config.mjs",
+    ".next/types/**/*.ts"
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@payload-config": ["./payload.config.ts"],
+      "shader-studio": ["../src/index.ts"],
+      "shader-studio/client": ["../src/exports/client.ts"],
+      "shader-studio/types": ["../src/exports/types.ts"],
+      "shader-studio/effects/wash": ["../src/effects/wash/index.ts"],
+      "shader-studio/effects/wash/client": ["../src/effects/wash/client.tsx"]
+    },
+    "noEmit": true,
+    "emitDeclarationOnly": false
+  }
+}

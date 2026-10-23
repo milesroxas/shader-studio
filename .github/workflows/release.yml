@@ -1,0 +1,32 @@
+name: Release
+
+# Publishes to npm when a `v*` tag is pushed. Uses npm trusted publishing
+# (OIDC): add this repository and workflow as a trusted publisher on the
+# package's npm settings page, and no token is needed. Until that is set up,
+# add an `NPM_TOKEN` secret and uncomment the env below.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm build
+      - run: pnpm test:unit
+      - run: pnpm publish --access public --no-git-checks --provenance
+        # env:
+        #   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

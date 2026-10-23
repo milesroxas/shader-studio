@@ -1,0 +1,421 @@
+/* Tailwind for the Shader Studio admin surface.
+
+   The Payload admin ships its own CSS (`@payloadcms/next/css`, cascade layers
+   `payload-default` and `payload`), so this entry brings utilities only: no
+   preflight, no base styles. The utilities stay unlayered on purpose: an
+   unlayered declaration beats every layered one, so a class on a Studio
+   element wins over Payload's element resets whichever stylesheet the
+   bundler happens to emit first. The primitives in src/client/ui read the
+   shadcn token map below; here those tokens are painted from Payload's own
+   `--theme-*` scale, so the Studio follows the admin's light and dark toggle
+   and any palette change Payload makes on upgrade, with no colors of its
+   own. Sources are the Studio's components and primitives, nothing else.
+
+   Built once at publish time (`pnpm build:css`) into dist/styles/studio.css,
+   which the client components import. A host needs no Tailwind of its own. */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' source(none);
+@import 'tw-animate-css';
+@source "../client";
+
+/* Polarity. Payload's admin stamps the visitor's theme on `<html>` as
+   `data-theme`, so the `dark:` utilities read that and nothing else. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Radix state variants, so a primitive can say `data-open:animate-in`. */
+@custom-variant data-open {
+  &:where([data-state='open']),
+  &:where([data-open]:not([data-open='false'])) {
+    @slot;
+  }
+}
+
+@custom-variant data-closed {
+  &:where([data-state='closed']),
+  &:where([data-closed]:not([data-closed='false'])) {
+    @slot;
+  }
+}
+
+@custom-variant data-checked {
+  &:where([data-state='checked']),
+  &:where([data-checked]:not([data-checked='false'])) {
+    @slot;
+  }
+}
+
+@custom-variant data-unchecked {
+  &:where([data-state='unchecked']),
+  &:where([data-unchecked]:not([data-unchecked='false'])) {
+    @slot;
+  }
+}
+
+@custom-variant data-selected {
+  &:where([data-selected='true']) {
+    @slot;
+  }
+}
+
+@custom-variant data-disabled {
+  &:where([data-disabled='true']),
+  &:where([data-disabled]:not([data-disabled='false'])) {
+    @slot;
+  }
+}
+
+@custom-variant data-active {
+  &:where([data-state='active']),
+  &:where([data-active]:not([data-active='false'])) {
+    @slot;
+  }
+}
+
+@custom-variant data-horizontal {
+  &:where([data-orientation='horizontal']) {
+    @slot;
+  }
+}
+
+@custom-variant data-vertical {
+  &:where([data-orientation='vertical']) {
+    @slot;
+  }
+}
+
+/* The shadcn token map the primitives read, each resolved from a custom
+   property painted on `:root` below. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-active: var(--active);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@theme {
+  /* Strong ease-out (quint): the Studio's settle curve for entrances and
+     swaps, as `ease-out-quint`. */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Critically damped spring (damping 1.0, response 0.35s, so ω = 2π / 0.35),
+     sampled as x(t) = 1 - (1 + ωt)e^(-ωt) across 500ms: no overshoot, 87% of
+     the way by 200ms, a long soft settle. For a surface that grows out of its
+     trigger. The samples assume a 500ms duration; change the two together. */
+  --ease-spring: linear(
+    0,
+    0.0755 5%,
+    0.2275 10%,
+    0.3908 15%,
+    0.5372 20%,
+    0.6575 25%,
+    0.7513 30%,
+    0.8222 35%,
+    0.8743 40%,
+    0.9389 50%,
+    0.9711 60%,
+    0.9866 70%,
+    0.9939 80%,
+    0.9972 90%,
+    1
+  );
+  /* Tailwind's font namespace would repaint Payload's `--font-mono` and
+     `--font-serif` on `:root`. Drop it; the one utility the Studio needs
+     reads Payload's variable below. */
+  --font-*: initial;
+}
+
+@utility font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Press micro-interaction, stated once: a quick ease-out press-down and a
+   slower spring-back release with slight overshoot. Consumed by the
+   `pressable` utility below. */
+:root {
+  --press-scale: 0.97;
+  /* Gentler compress for large surfaces (full-width rows, tiles) where 0.97
+     would translate edges by tens of pixels. Applied via `pressable-subtle`. */
+  --press-scale-subtle: 0.985;
+  --press-duration: 150ms;
+  --press-ease: cubic-bezier(0, 0, 0.2, 1);
+  --press-release-duration: 350ms;
+  --press-release-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Press/release interaction for interactive surfaces (buttons, card
+   buttons). Owns the element's `transition`: don't stack `transition-*`
+   utilities on a pressable element; colors and opacity ride the same list.
+   The aria-haspopup guard keeps open dropdown/select triggers from sitting
+   compressed. */
+@utility pressable {
+  transition:
+    color var(--press-duration) var(--press-ease),
+    background-color var(--press-duration) var(--press-ease),
+    border-color var(--press-duration) var(--press-ease),
+    opacity var(--press-duration) var(--press-ease),
+    scale var(--press-release-duration) var(--press-release-ease);
+
+  &:active:not([aria-haspopup='true']) {
+    scale: var(--press-scale);
+    transition-duration: var(--press-duration);
+    transition-timing-function: var(--press-ease);
+  }
+
+  /* A press that became a drag was never a click: it goes quiet on the press
+     curve rather than bouncing back as if something completed. */
+  &[data-dragging]:active:not([aria-haspopup='true']) {
+    scale: 1;
+    transition-duration: var(--press-duration);
+    transition-timing-function: var(--press-ease);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0s;
+  }
+}
+
+/* Modifier for `pressable` on large surfaces: swaps in the subtle scale
+   token; timing and behavior stay owned by `pressable`. */
+@utility pressable-subtle {
+  --press-scale: var(--press-scale-subtle);
+}
+
+/* Tailwind's preflight is left out (Payload's guide: it would reset the
+   admin's own chrome), so the browser's default button, input and list
+   styling still reaches the Studio. This is the slice of preflight the
+   primitives assume, scoped to the Studio's roots and its portaled
+   surfaces, and wrapped in `:where()` so it has no specificity: every
+   utility class outranks it, exactly as it outranks preflight on a site. */
+:where(
+  [data-shader-studio],
+  [data-slot='tooltip-content'],
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='dialog-content']
+) {
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+  }
+  /* The border reset is unlayered, so it beats Payload's own layered
+     `.btn--style-*` rules and would leave a secondary button as bare text.
+     `.btn` and everything inside it keep their chrome; `:where()` keeps this
+     at zero specificity, so every utility still outranks it. */
+  :where(*:not(.btn, .btn *)),
+  ::before,
+  ::after {
+    border: 0 solid;
+  }
+  :where(h2, h3, p, ul, ol, figure) {
+    margin: 0;
+  }
+  :where(ul, ol) {
+    padding: 0;
+    list-style: none;
+  }
+  /* Payload's own Button (`.btn`) keeps its chrome: it is the one control
+     the Studio borrows from the admin as is. */
+  :where(button:not(.btn), input, select, textarea) {
+    font: inherit;
+    color: inherit;
+    background-color: transparent;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    letter-spacing: inherit;
+  }
+  :where(button:not(.btn), [role='button']) {
+    cursor: default;
+    appearance: button;
+  }
+  :where(input, textarea) {
+    appearance: none;
+  }
+  :where(img, svg, canvas) {
+    display: block;
+    vertical-align: middle;
+    max-width: 100%;
+  }
+  :where(kbd, code) {
+    font-size: 1em;
+  }
+  :where(a) {
+    color: inherit;
+    text-decoration: inherit;
+  }
+}
+
+/* Payload's admin sets the root font size to 13px, so a `rem` in here is
+   0.8125 of what Tailwind's scale means by it: `text-xs` lands at 9.75px, a
+   26px control at 21px, a 12px gap at 9.75px. Left alone the Studio reads as
+   a shrunken copy of itself next to every px-sized thing beside it. The
+   scale is restated in px on the Studio's roots and its portaled surfaces:
+   spacing, size and text utilities all read these variables at the use site,
+   so the utilities resolve at the size they were authored at and nothing
+   outside these roots is touched.
+
+   Container and media queries are the exception: Tailwind emits
+   `@container (width >= 48rem)` as a literal, and a query condition cannot
+   read a variable, so the Stage states its own breakpoint in px. */
+[data-shader-studio],
+[data-slot='tooltip-content'],
+[data-slot='select-content'],
+[data-slot='dropdown-menu-content'],
+[data-slot='dialog-content'] {
+  --spacing: 4px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --container-xs: 320px;
+
+  /* Inspector row geometry, stated once and read by every row: the label
+     column is the longest parameter name, the control column is fluid, and
+     the value column is fixed so that one number, a range pair and a
+     select's readout all end on the same rule and every slider track stops
+     at the same place. The label column is measured to the longest name that
+     sets on one line, not to the longest name there is: a two-word label
+     takes two lines at the row's own height, and holding a column wide
+     enough for it would spend pixels of every slider's travel on one label. */
+  --row-label: 112px;
+  --row-value: 72px;
+  /* The gutter the change dots sit in, outside the label column. */
+  --row-gutter: 16px;
+  /* The Inspector's tab strip is Payload's document tab row, stated in
+     Payload's own unit: same height, same top offset, so the hairline under
+     `Look · Pointer · Stills` runs on with the one under `Studio · Details ·
+     History` and the two columns start on one line. Section headers park
+     directly beneath it. */
+  --inspector-tabs: calc(var(--base) * 2 + 1px);
+}
+
+/* Payload's elevation scale runs from the ground (0) to the ink (1000) in
+   both polarities, so one map serves light and dark. The only literal is
+   the primary: Payload has no accent, and the Studio needs one for a value
+   that departs from its default. It is a blue in light, and a lighter tint
+   of it in dark so 12px changed-value text clears 4.5:1 on the admin's
+   ground. */
+:root {
+  --background: var(--theme-bg);
+  --foreground: var(--theme-text);
+  --card: var(--theme-elevation-50);
+  --card-foreground: var(--theme-text);
+  --popover: var(--theme-elevation-50);
+  --popover-foreground: var(--theme-text);
+  --primary: oklch(42% 0.149 264.4);
+  --primary-foreground: oklch(97% 0.014 254.6);
+  --secondary: var(--theme-elevation-100);
+  --secondary-foreground: var(--theme-text);
+  --muted: var(--theme-elevation-100);
+  --muted-foreground: var(--theme-elevation-650);
+  --accent: var(--theme-elevation-100);
+  --accent-foreground: var(--theme-text);
+  --destructive: var(--theme-error-500);
+  --border: var(--theme-elevation-150);
+  --input: var(--theme-elevation-250);
+  --ring: var(--theme-elevation-500);
+  --success: var(--theme-success-500);
+  --warning: var(--theme-warning-500);
+  --error: var(--theme-error-500);
+  --active: var(--theme-success-500);
+  /* Payload's medium radius is 4px; the map derives `rounded-md` as
+     `--radius` minus 2px. */
+  --radius: 6px;
+}
+
+[data-theme='dark'] {
+  --primary: oklch(78% 0.11 265);
+  --primary-foreground: oklch(20% 0.04 265);
+}
+
+/* Payload paints the admin dark without declaring the polarity to the
+   browser, so the document keeps `color-scheme: normal` and the scroll
+   thumbs render in the light palette: a bright bar down the edge of a dark
+   panel, over the values it is scrolling past. Declared here for the pages
+   that carry the Studio, so the sidebar's thumb, the Inspector's own
+   scrollers and the portaled menus all come back in the admin's polarity. */
+:root:has([data-shader-studio]) {
+  color-scheme: light;
+}
+
+[data-theme='dark']:has([data-shader-studio]) {
+  color-scheme: dark;
+}
+
+/* The Studio's own scrollers get a hairline thumb. Payload's sidebar, which
+   is the Inspector's scroll container, is deliberately left alone: forcing a
+   classic scrollbar there takes its width out of a panel whose control column
+   is already the narrowest thing on the page, and the polarity above is what
+   made that scrollbar wrong in the first place. */
+[data-slot='select-content'],
+[data-slot='dialog-content'] {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--muted-foreground) 45%, transparent) transparent;
+}
+
+/* Payload's document frame, asked for an inspector instead of a document.
+   The sidebar is a third of the page by default, which on a wide screen is a
+   600px column of 26px controls: sliders long enough to be imprecise, a value
+   column a hand's travel from its label. Payload states that width and those
+   gutters as custom properties, so this is a request in its own terms rather
+   than a rule fighting its layout. The width is the Inspector's own geometry
+   (label + control + value + the gutters below) and does not grow with the
+   viewport; the main column keeps `flex-grow`, so every pixel taken off the
+   sidebar goes to the stage. */
+.document-fields:has([data-shader-studio='inspector']) {
+  --doc-sidebar-width: 376px;
+  --sidebar-wrap-width: var(--doc-sidebar-width);
+  --sidebar-gutter-h-left: 0px;
+  --sidebar-gutter-h-right: 0px;
+  /* Payload sizes the sticky column at `100vh - --doc-controls-height`, the
+     height it would need if the controls bar were the only thing above it.
+     At rest the app header is above it too, so the column runs one header
+     past the fold: the page grows by that much even when the stage is short,
+     and the Inspector's last rows sit below the window with its own scroll
+     region ending out of reach. The column is chrome, not a field stack, so
+     it states every band above it and ends on the fold. Once the page does
+     scroll (a stage taller than the window) the header leaves and the column
+     sticks under the controls bar with that band to spare at the bottom,
+     which is the trade for never lengthening the page ourselves. */
+  --sidebar-wrap-height: calc(100svh - var(--app-header-height) - var(--doc-controls-height));
+}
+
+/* Payload's sidebar gutter is 40px in and 60px out, sized for a stack of
+   document fields. The Inspector states its own, once, in `--row-gutter`, so
+   the change dots sit in a margin of the panel's own making. */
+.document-fields__sidebar-fields:has([data-shader-studio='inspector']) {
+  gap: 0;
+  /* The top matches the main column's, so both columns' first rule lands on
+     the same line; the bottom is the panel's own, sized to clear the end of
+     the scroll region. */
+  padding-block: calc(var(--base) * 1.5) 0;
+}
+
+/* The sidebar is the Inspector's scroll region and stops at its own ends: a
+   flick that reaches the last row must not carry on into the document and
+   take the stage off screen with it. */
+.document-fields__sidebar:has([data-shader-studio='inspector']) {
+  overscroll-behavior: contain;
+}
