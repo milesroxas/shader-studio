@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for looking. The plugin follows the layout of Payload's official plugin template: the package in `src/`, a Payload app for developing against it in `dev/`.
+The repository follows Payload's plugin template: the package in `src/`, a Payload app for developing against it in `dev/`. Open an issue before starting a large change.
 
 ## Setup
 
@@ -10,30 +10,40 @@ cp dev/.env.example dev/.env
 pnpm dev
 ```
 
-The admin is at <http://localhost:3002/admin>; the seeded user is `dev@payloadcms.com` / `test`.
+The admin runs at <http://localhost:3002/admin>. The seeded user is `dev@payloadcms.com` / `test`.
 
 ## Checks
 
+CI runs these on every pull request.
+
 ```sh
-pnpm format      # oxfmt
-pnpm lint        # eslint (@payloadcms/eslint-config)
+pnpm format:check   # oxfmt
+pnpm lint           # eslint (@payloadcms/eslint-config)
 pnpm typecheck
 pnpm test:unit
 pnpm test:int
 pnpm build
 ```
 
-CI runs all of these on every pull request.
-
 ## Layout
 
-- `src/core/` — the pure engine: effect contract, recipes, snapshots, stills, ground, release parsing. No React, no Payload, no Three. Everything here has unit tests.
-- `src/` (root) — the plugin: options, the looks collection, endpoints, hydration, usage, media guards.
-- `src/client/` — the admin: the studio's components, the client registry of effects, capture and preview, the Tailwind primitives.
-- `src/effects/wash/` — the shipped example effect: contract, copy, scenes.
-- `src/styles/studio.css` — the Tailwind entry compiled into `dist/styles/studio.css` at build time.
-- `dev/` — the development app and the integration tests.
+| Path                    | Contents                                                                                              |
+| ----------------------- | ----------------------------------------------------------------------------------------------------- |
+| `src/core/`             | Pure engine: effect contract, recipes, snapshots, stills, ground, release parsing. Fully unit tested. |
+| `src/` (root)           | Plugin: options, looks collection, endpoints, hydration, usage, media guards.                         |
+| `src/client/`           | Admin: studio components, client effect registry, capture and preview, UI primitives.                 |
+| `src/effects/wash/`     | Shipped example effect: contract, copy, scenes.                                                       |
+| `src/styles/studio.css` | Tailwind entry compiled to `dist/styles/studio.css` at build time.                                    |
+| `dev/`                  | Development app and integration tests.                                                                |
+
+## Pull requests
+
+- Add tests for behaviour changes. Core changes need unit tests; plugin behaviour needs an integration test in `dev/int.spec.ts`.
+- Add an entry under `[Unreleased]` in `CHANGELOG.md`.
+- Run `pnpm dev:generate-importmap` after changing which admin components the plugin registers.
 
 ## Releasing
 
-Bump the version in `package.json`, add a section to `CHANGELOG.md`, tag `vX.Y.Z` and push the tag. The release workflow builds and publishes to npm.
+1. Move `[Unreleased]` entries in `CHANGELOG.md` under a new version heading with today's date.
+2. Bump `version` in `package.json`.
+3. Commit, tag `vX.Y.Z` and push the tag. The release workflow builds and publishes to npm.
