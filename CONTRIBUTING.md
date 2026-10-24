@@ -18,6 +18,7 @@ CI runs these on every pull request.
 
 ```sh
 pnpm lint           # biome check (format, lint, import order)
+pnpm fallow         # fallow dead-code (unused files, exports, dependencies, cycles)
 pnpm typecheck
 pnpm test:unit
 pnpm test:int

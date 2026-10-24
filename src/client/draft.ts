@@ -6,7 +6,6 @@ import { emptyRecipe, type Recipe, validateRecipe } from '../core/recipe.js'
 import { isEffectId } from '../core/registry.js'
 import { newStill, type Still } from '../core/stills.js'
 import { EFFECT_FIELD, GROUND_FIELD, RECIPE_FIELD, STILLS_FIELD } from '../paths.js'
-import type { Studio } from './config.js'
 import { useStudio } from './config.js'
 import {
   type LookEdit,
@@ -122,8 +121,6 @@ export function useDraft(path: string = RECIPE_FIELD) {
   }
 }
 
-export type Draft = ReturnType<typeof useDraft>
-
 /**
  * The draft with what the stage shows and the Inspector edits: the live look,
  * the poster, or one still. A selection that names a still the draft no
@@ -165,5 +162,3 @@ export function useStills(path?: string) {
 }
 
 export type Stills = ReturnType<typeof useStills>
-
-export type { Studio }

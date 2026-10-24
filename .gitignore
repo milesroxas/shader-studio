@@ -44,3 +44,4 @@ next-env.d.ts
 /dev/*.db
 /dev/*.db-journal
 /dev/payload-types.ts
+.fallow/
