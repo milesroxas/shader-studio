@@ -16,6 +16,15 @@ export type StillSelection = 'poster' | null | string
 /** One undo step: everything of the look an edit in the Studio can change together. */
 export type LookEdit = { recipe: Recipe; stills: Still[] }
 
+/** How the stage frames the look: on its own, behind copy as a background, or beside a section's copy. */
+export const PREVIEW_LAYOUTS = [
+  { label: 'Shader', value: 'shader' },
+  { label: 'Background', value: 'background' },
+  { label: 'Content', value: 'content' },
+] as const
+
+export type PreviewLayout = (typeof PREVIEW_LAYOUTS)[number]['value']
+
 /**
  * Studio session state that is not part of the document: how the stage is
  * showing the recipe, the kept comparison, and the undo stack. The Inspector
@@ -34,8 +43,9 @@ export type StudioSession = {
   /** Bumped to restart the preview from frame zero. */
   generation: number
   history: LookEdit[]
+  layout: PreviewLayout
   paused: boolean
-  /** One of the effect's placements, or empty before a stage has chosen one. */
+  /** The placement of the slot the Studio was opened from, or empty for the effect's widest. */
   placement: string
   showComparison: boolean
   still: StillSelection
@@ -52,6 +62,7 @@ const initial = (): StudioSession => ({
   future: [],
   generation: 0,
   history: [],
+  layout: 'shader',
   paused: false,
   placement: '',
   showComparison: false,

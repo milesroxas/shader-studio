@@ -45,8 +45,8 @@ import { useLook } from '../look-store.js'
 import type { Shot } from '../shot.js'
 import { shotOf } from '../shot.js'
 import { draftState } from '../status.js'
-import type { StudioSession } from '../store.js'
-import { studioStore, useStudioSession } from '../store.js'
+import type { PreviewLayout, StudioSession } from '../store.js'
+import { PREVIEW_LAYOUTS, studioStore, useStudioSession } from '../store.js'
 import { Button } from '../ui/button.js'
 import { cn } from '../ui/cn.js'
 import { Input } from '../ui/input.js'
@@ -403,8 +403,6 @@ export const Stage: UIFieldClientComponent = () => {
               live={live}
               onToggleLive={() => setLive((v) => !v)}
               patch={patch}
-              placement={placement}
-              placements={effect.placements}
               restart={() => studioStore.restart(key)}
               session={session}
               setSurface={setSurface}
@@ -905,6 +903,7 @@ function Viewport({
             generation={session.generation}
             ground={ground}
             key={`${definition.contract.id}:${session.generation}:${placement}`}
+            layout={session.layout}
             live
             paused={session.paused}
             placement={placement}
@@ -985,9 +984,9 @@ function BudgetReadout({ budget }: { budget: EffectBudget }) {
 }
 
 /**
- * Face and its ground, then placement and playback for the live look;
+ * Face and its ground, then layout and playback for the live look;
  * `children` are the seed and frame of what the stage shows, and the way to
- * its variations. A still has no placement and nothing to play: the controls
+ * its variations. A still has no layout and nothing to play: the controls
  * that only mean something live leave while it is up, rather than sit dimmed.
  */
 function Transport({
@@ -995,8 +994,6 @@ function Transport({
   live,
   onToggleLive,
   patch,
-  placement,
-  placements,
   restart,
   session,
   setSurface,
@@ -1007,8 +1004,6 @@ function Transport({
   live: boolean
   onToggleLive: () => void
   patch: Patch
-  placement: string
-  placements: readonly string[]
   restart: () => void
   session: StudioSession
   setSurface: (next: Surface) => void
@@ -1031,24 +1026,18 @@ function Transport({
         </ToggleGroup>
         <GroundControl surface={surface} />
       </div>
-      {!still && placements.length > 1 && (
+      {!still && (
         <ToggleGroup
-          aria-label="Placement"
+          aria-label="Layout"
           className="w-auto"
-          onValueChange={(next) => {
-            if (!next) {
-              return
-            }
-            patch({ placement: next })
-            restart()
-          }}
+          onValueChange={(next) => next && patch({ layout: next as PreviewLayout })}
           type="single"
-          value={placement}
+          value={session.layout}
           variant="segmented"
         >
-          {placements.map((candidate) => (
-            <ToggleGroupItem className="capitalize" key={candidate} value={candidate}>
-              {candidate}
+          {PREVIEW_LAYOUTS.map((layout) => (
+            <ToggleGroupItem key={layout.value} value={layout.value}>
+              {layout.label}
             </ToggleGroupItem>
           ))}
         </ToggleGroup>

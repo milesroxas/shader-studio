@@ -9,12 +9,14 @@ import type { StudioEffectDefinition } from './effects.js'
 import { loadScenes } from './effects.js'
 import { usePrefersReducedMotion } from './hooks/use-prefers-reduced-motion.js'
 import type { EffectScene } from './scenes.js'
+import type { PreviewLayout } from './store.js'
 
 type StudioPreviewProps = {
   effect: StudioEffectDefinition
   generation: number
   /** The colour under the effect: the look's own ground for this face, else the Studio's. */
   ground: string
+  layout?: PreviewLayout
   /** Whether the placement ever runs live; a static one shows the first frame. */
   live: boolean
   paused: boolean
@@ -23,12 +25,24 @@ type StudioPreviewProps = {
   surface: Surface
 }
 
-const COPY_STYLE: CSSProperties = {
-  left: '8%',
-  maxWidth: '65%',
+const COPY_BASE: CSSProperties = {
   pointerEvents: 'none',
   position: 'absolute',
-  top: '35%',
+  top: '50%',
+  transform: 'translateY(-50%)',
+  zIndex: 1,
+}
+
+const LAYOUTS: Record<PreviewLayout, { copy?: CSSProperties; shader: CSSProperties }> = {
+  background: {
+    copy: { ...COPY_BASE, left: '8%', maxWidth: '60%' },
+    shader: { inset: 0 },
+  },
+  content: {
+    copy: { ...COPY_BASE, left: '6%', width: '36%' },
+    shader: { borderRadius: 8, inset: '32px 32px 32px 48%', overflow: 'hidden' },
+  },
+  shader: { shader: { inset: 0 } },
 }
 
 const stageStyle = (surface: Surface, ground: string): CSSProperties => ({
@@ -67,6 +81,7 @@ export function StudioPreview({
   effect,
   generation,
   ground,
+  layout = 'shader',
   live,
   paused,
   placement,
@@ -84,23 +99,14 @@ export function StudioPreview({
     [contract, recipe, surface, placement],
   )
   const blend = contract.blend?.(tuning)
-
-  const copy = (
-    <div style={COPY_STYLE}>
-      <strong style={{ fontSize: 32 }}>Your next visual.</strong>
-      <p>Check contrast with real content {blend ? 'under' : 'over'} the effect.</p>
-    </div>
-  )
+  const { copy, shader } = LAYOUTS[layout]
 
   return (
     <div ref={root} style={stageStyle(surface, ground)}>
-      {/* A blended effect washes over the page's content; one drawn with
-          alpha is the ground the content sits on. */}
-      {blend && copy}
       {error ? (
         <p role="alert">{error}</p>
       ) : scenes ? (
-        <div style={{ inset: 0, mixBlendMode: blend, position: 'absolute' }}>
+        <div style={{ ...shader, mixBlendMode: blend, position: 'absolute' }}>
           <scenes.Live
             active={!ready || (!paused && !reducedMotion && live)}
             generation={generation}
@@ -112,7 +118,16 @@ export function StudioPreview({
           />
         </div>
       ) : null}
-      {!blend && copy}
+      {copy && (
+        <div style={copy}>
+          <strong style={{ display: 'block', fontSize: 32, lineHeight: 1.1 }}>
+            Your next visual.
+          </strong>
+          <p style={{ marginTop: 12, opacity: 0.8 }}>
+            A short description, to check how the look reads with real content.
+          </p>
+        </div>
+      )}
     </div>
   )
 }

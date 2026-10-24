@@ -20,7 +20,7 @@ export type StudioLookFieldArgs = {
   name?: string
   /** Fields merged over the relationship: `label`, `admin.description`, `required`. */
   overrides?: Partial<Omit<RelationshipField, 'name' | 'relationTo' | 'type'>>
-  /** The placement the Studio opens at for a look made or edited from this slot; one of the effect's `placements`. */
+  /** The placement the Studio previews at for a look made or edited from this slot; one of the effect's `placements`. */
   placement?: string
   /**
    * A sibling text field that holds a shipped look's id. The picker offers

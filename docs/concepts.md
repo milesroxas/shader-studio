@@ -24,7 +24,9 @@ Static renders, one per use: a share image the site serves, social sizes to down
 
 ## Placements
 
-An effect names where it may run, widest first, for example `['hero', 'block', 'card']`. The stage previews each placement at its budget. Snapshots and stills are capped at the widest.
+An effect names where it may run, widest first, for example `['hero', 'block', 'card']`. The stage previews at the slot's placement, or the widest when opened on its own. Snapshots and stills are capped at the widest.
+
+The stage's layout toggle frames the look on its own, as a background behind a headline, or beside a section's headline and description.
 
 ## History and usage
 

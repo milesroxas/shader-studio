@@ -125,7 +125,7 @@ const release = parseRelease(washEffect, page.hero.look)
 | `name`        | `'look'`         | Must equal the plugin's `slotField`.                                                         |
 | `looksSlug`   | `'studio-looks'` | Must equal the plugin's `looksSlug`.                                                         |
 | `label`       | `'Slot'`         | Used in a new look's title: "Page title · Hero".                                             |
-| `placement`   | first placement  | Placement the studio opens at from this slot.                                                |
+| `placement`   | first placement  | Placement the studio previews this slot's look at.                                           |
 | `presetField` | none             | Sibling text field holding a shipped look id. The picker offers shipped looks and writes it. |
 | `overrides`   | none             | Merged over the relationship field.                                                          |
 
