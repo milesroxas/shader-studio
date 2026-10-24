@@ -2,9 +2,8 @@
 
 import '../../styles/studio.css'
 
-import type { UIFieldClientComponent } from 'payload'
-
 import { Link, useDocumentInfo } from '@payloadcms/ui'
+import type { UIFieldClientComponent } from 'payload'
 
 import { useLook } from '../look-store.js'
 

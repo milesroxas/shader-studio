@@ -178,6 +178,7 @@ function WashPlane({
   const size = useThree((state) => state.size)
 
   // A new generation starts the run over from frame zero.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `generation` is the trigger, not a value the effect reads
   useEffect(() => {
     time.current = 0
     uniforms.uTime.value = 0

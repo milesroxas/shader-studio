@@ -4,12 +4,11 @@ import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { Surface } from '../core/effect.js'
 import type { Recipe } from '../core/recipe.js'
-import type { StudioEffectDefinition } from './effects.js'
-import type { EffectScene } from './scenes.js'
-
 import { snapshotRecipe } from '../core/recipe.js'
+import type { StudioEffectDefinition } from './effects.js'
 import { loadScenes } from './effects.js'
 import { usePrefersReducedMotion } from './hooks/use-prefers-reduced-motion.js'
+import type { EffectScene } from './scenes.js'
 
 type StudioPreviewProps = {
   effect: StudioEffectDefinition

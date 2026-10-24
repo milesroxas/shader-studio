@@ -2,8 +2,6 @@
 
 import '../../styles/studio.css'
 
-import type { UIFieldClientComponent } from 'payload'
-
 import { Link, toast } from '@payloadcms/ui'
 import {
   IconArrowBackUp,
@@ -16,14 +14,8 @@ import {
   IconPlus,
   IconRefresh,
 } from '@tabler/icons-react'
+import type { UIFieldClientComponent } from 'payload'
 import { lazy, Suspense, useEffect, useState } from 'react'
-
-import type { Stills } from '../draft.js'
-import type { StudioEffectDefinition } from '../effects.js'
-import type { LookState, LookUse, PublishedState } from '../look-store.js'
-import type { Shot } from '../shot.js'
-import type { StudioSession } from '../store.js'
-
 import {
   type Effect,
   type EffectBudget,
@@ -33,22 +25,27 @@ import {
   lookOptions,
   type Recipe,
   resolveRecipeTuning,
-  sameGround,
   SEED_MAX,
   type Snapshot,
+  type Still,
+  type StudioGround,
+  type Surface,
+  sameGround,
   snapshotChanges,
   snapshotRecipe,
   starterRecipe,
-  type Still,
   stillInputs,
-  type StudioGround,
   studioGround,
-  type Surface,
 } from '../../core/index.js'
+import type { Stills } from '../draft.js'
 import { useGround, useStills } from '../draft.js'
+import type { StudioEffectDefinition } from '../effects.js'
+import type { LookState, LookUse, PublishedState } from '../look-store.js'
 import { useLook } from '../look-store.js'
+import type { Shot } from '../shot.js'
 import { shotOf } from '../shot.js'
 import { draftState } from '../status.js'
+import type { StudioSession } from '../store.js'
 import { studioStore, useStudioSession } from '../store.js'
 import { Button } from '../ui/button.js'
 import { cn } from '../ui/cn.js'
@@ -356,7 +353,6 @@ export const Stage: UIFieldClientComponent = () => {
   return (
     <TooltipProvider delayDuration={400}>
       {/* The stage listens for its shortcuts (space, r, c, Escape) on its own box. */}
-      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <section
         aria-label={copy.title}
         className="@container flex flex-col overflow-hidden rounded-lg border border-input bg-background"

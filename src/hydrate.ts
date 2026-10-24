@@ -1,14 +1,12 @@
 import type { CollectionAfterReadHook, Field, GlobalAfterReadHook, PayloadRequest } from 'payload'
-
-import type { MediaLike, ResolvedStudioConfig } from './options.js'
-
 import {
   lookGround,
   type PosterMediaSource,
   publishedStills,
-  siteStillUses,
   type Surface,
+  siteStillUses,
 } from './core/index.js'
+import type { MediaLike, ResolvedStudioConfig } from './options.js'
 import {
   GROUND_FIELD,
   LIGHT_POSTER_FIELD,
@@ -16,7 +14,7 @@ import {
   STILLS_FIELD,
   THUMBNAIL_FIELD,
 } from './paths.js'
-import { hasSlots, slotHolders, slotId, slotMap, type SlotMap } from './slots.js'
+import { hasSlots, type SlotMap, slotHolders, slotId, slotMap } from './slots.js'
 
 type LookRow = { id: number | string } & Record<string, unknown>
 

@@ -2,10 +2,8 @@
 
 import { useConfig } from '@payloadcms/ui'
 import { createContext, type ReactNode, use, useEffect, useMemo } from 'react'
-
-import type { StudioClientConfig } from '../options.js'
-
 import { type Effect, type EffectRegistry, isEffectId } from '../core/index.js'
+import type { StudioClientConfig } from '../options.js'
 import { type StudioEffectDefinition, useEffectDefinitions } from './effects.js'
 
 const ConfigContext = createContext<null | StudioClientConfig>(null)
@@ -19,12 +17,9 @@ export function StudioProvider({
   children,
   ...config
 }: { children?: ReactNode } & StudioClientConfig) {
-  const value = useMemo(
-    () => config,
-    // The props are plain data from the server; a new object each render is the same configuration.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [JSON.stringify(config)],
-  )
+  // The props are plain data from the server; a new object each render is the same configuration.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: keyed by the serialized configuration, not the object
+  const value = useMemo(() => config, [JSON.stringify(config)])
   return <ConfigContext value={value}>{children}</ConfigContext>
 }
 
@@ -54,14 +49,15 @@ export function useStudio(): Studio {
     )
   }
   const missing = config.effectIds.filter((id) => !definitions[id])
+  // biome-ignore lint/correctness/useExhaustiveDependencies: keyed by the joined ids, not the array
   useEffect(() => {
     if (missing.length) {
-      // eslint-disable-next-line no-console
+      // biome-ignore lint/suspicious/noConsole: a misconfiguration the admin cannot otherwise see
       console.error(
         `shader-studio: no client registration for effect${missing.length > 1 ? 's' : ''} ${missing.join(', ')}. Pass each effect's \`client\` path in the plugin options and regenerate the import map.`,
       )
     }
-  }, [missing.join(',')]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [missing.join(',')])
   return useMemo(() => {
     const ids = config.effectIds.filter((id) => definitions[id])
     const effects: Record<string, Effect> = {}

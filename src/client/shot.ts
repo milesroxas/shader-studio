@@ -4,10 +4,10 @@ import type { LookGround } from '../core/ground.js'
 import { type CaptureOptions, POSTER_CAPTURE, type Recipe, snapshotRecipe } from '../core/recipe.js'
 import {
   type Still,
+  type StillUses,
   stillCapture,
   stillLabel,
   stillTuning,
-  type StillUses,
 } from '../core/stills.js'
 
 /**

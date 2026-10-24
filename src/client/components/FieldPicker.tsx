@@ -2,15 +2,10 @@
 
 import '../../styles/studio.css'
 
-import type { RelationshipFieldClientProps } from 'payload'
-
 import { toast, useDocumentDrawer, useDocumentInfo, useField, useFormFields } from '@payloadcms/ui'
 import { IconPlus } from '@tabler/icons-react'
+import type { RelationshipFieldClientProps } from 'payload'
 import { useCallback, useEffect, useState } from 'react'
-
-import type { LookFieldClientProps } from '../../fields/look-field.js'
-import type { Studio } from '../config.js'
-
 import {
   emptyRecipe,
   isEffectId,
@@ -20,7 +15,9 @@ import {
   starterRecipe,
   studioGround,
 } from '../../core/index.js'
+import type { LookFieldClientProps } from '../../fields/look-field.js'
 import { EFFECT_FIELD } from '../../paths.js'
+import type { Studio } from '../config.js'
 import { useStudio } from '../config.js'
 import { posterOf } from '../look-store.js'
 import { sessionKey, studioStore } from '../store.js'

@@ -2,7 +2,7 @@
 
 import { IconX } from '@tabler/icons-react'
 
-import { studioGround, type Surface } from '../../core/index.js'
+import { type Surface, studioGround } from '../../core/index.js'
 import { useStudio } from '../config.js'
 import { useGround } from '../draft.js'
 import { fromHex, GROUND_COPY, toHex } from '../parameters.js'

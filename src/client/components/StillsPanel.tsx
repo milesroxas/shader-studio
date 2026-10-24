@@ -5,11 +5,6 @@ import { IconDownload, IconExternalLink, IconPlus } from '@tabler/icons-react'
 import { useState } from 'react'
 
 import type { LookGround, Still, StillUses, StudioGround } from '../../core/index.js'
-import type { Stills } from '../draft.js'
-import type { LookState } from '../look-store.js'
-import type { StillStatus } from '../status.js'
-import type { StillSelection } from '../store.js'
-
 import {
   CUSTOM_USE,
   POSTER_CAPTURE,
@@ -18,7 +13,11 @@ import {
   studioGround,
   withCustomUse,
 } from '../../core/index.js'
+import type { Stills } from '../draft.js'
+import type { LookState } from '../look-store.js'
 import { renderStill } from '../publish.js'
+import type { StillStatus } from '../status.js'
+import type { StillSelection } from '../store.js'
 import { Button } from '../ui/button.js'
 import { Checkbox } from '../ui/checkbox.js'
 import { cn } from '../ui/cn.js'

@@ -142,7 +142,7 @@ When the host document is published, the field validates that the look is publis
 ```sh
 pnpm install
 cp dev/.env.example dev/.env
-pnpm dev          # dev app at http://localhost:3002/admin (dev@payloadcms.com / test)
+pnpm dev          # dev app at http://localhost:3002/admin (dev@milesroxas.com / test)
 pnpm test         # unit tests, then integration tests on in-memory SQLite
 pnpm build        # dist/: types, JS and the compiled studio.css
 ```

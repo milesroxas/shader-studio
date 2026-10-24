@@ -5,8 +5,8 @@ import { type KeyboardEvent, type ReactNode, useEffect, useState } from 'react'
 import type { Parameter, RangeParameter, VectorParameter } from '../../core/index.js'
 
 import {
-  decimals,
   type Dependency,
+  decimals,
   formatValue,
   fromHex,
   optionLabel,
@@ -492,6 +492,7 @@ function VectorControl({
         <ValueField
           className="min-w-0 flex-1 px-1"
           disabled={disabled}
+          // biome-ignore lint/suspicious/noArrayIndexKey: a vector component is its position
           key={index}
           label={`${copy.label} ${index + 1}`}
           max={spec.max}

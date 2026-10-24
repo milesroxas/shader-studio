@@ -2,14 +2,11 @@
 
 import '../../styles/studio.css'
 
-import type { JSONFieldClientComponent } from 'payload'
-
 import { IconChevronsDown, IconChevronsUp } from '@tabler/icons-react'
+import type { JSONFieldClientComponent } from 'payload'
 import { useState } from 'react'
 
 import type { Effect, Recipe, Still, StillUses, Tuning } from '../../core/index.js'
-import type { Stills } from '../draft.js'
-
 import {
   resolveRecipeTuning,
   resolveTuning,
@@ -17,6 +14,7 @@ import {
   validateRecipe,
   validateStills,
 } from '../../core/index.js'
+import type { Stills } from '../draft.js'
 import { useGround, useStills } from '../draft.js'
 import { useLook } from '../look-store.js'
 import {
@@ -47,6 +45,7 @@ const summaryNode = (summary: GroupSummary) =>
         <span
           aria-hidden
           className="size-3 rounded-[3px] ring-1 ring-border ring-inset"
+          // biome-ignore lint/suspicious/noArrayIndexKey: a swatch is its position in the palette
           key={index}
           style={{ backgroundColor: toHex(rgb) }}
         />

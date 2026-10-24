@@ -2,9 +2,6 @@
 
 import { IconDice5 } from '@tabler/icons-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-
-import type { StudioEffectDefinition } from '../effects.js'
-
 import {
   FRAME_MAX,
   type LookGround,
@@ -12,8 +9,9 @@ import {
   type StudioGround,
   studioGround,
 } from '../../core/index.js'
+import type { StudioEffectDefinition } from '../effects.js'
 import { captureSerial, isAbort } from '../publish.js'
-import { sheetCapture, type Shot } from '../shot.js'
+import { type Shot, sheetCapture } from '../shot.js'
 import { Button } from '../ui/button.js'
 import { cn } from '../ui/cn.js'
 import {
@@ -161,7 +159,7 @@ function SeedStrip({
 
   // The shot is read through a ref and the run is keyed by its identity, so a
   // render that rebuilds the shot object does not render the sheet again.
-
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `identity` stands in for the shot read through the ref
   useEffect(() => {
     if (!open || !seeds.length) {
       return
@@ -247,7 +245,7 @@ function FrameStrip({
 
   // The shot is read through a ref and the run is keyed by its identity, so a
   // render that rebuilds the shot object does not render the strip again.
-
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `identity` stands in for the shot read through the ref
   useEffect(() => {
     if (!open) {
       return

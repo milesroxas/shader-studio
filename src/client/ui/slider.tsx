@@ -228,6 +228,7 @@ function Slider({
             'focus-visible:ring-[3px] focus-visible:ring-ring/50',
           )}
           data-slot="slider-thumb"
+          // biome-ignore lint/suspicious/noArrayIndexKey: a thumb is its position in the range
           key={index}
         >
           {formatValue && (

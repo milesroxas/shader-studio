@@ -10,15 +10,14 @@ cp dev/.env.example dev/.env
 pnpm dev
 ```
 
-The admin runs at <http://localhost:3002/admin>. The seeded user is `dev@payloadcms.com` / `test`.
+The admin runs at <http://localhost:3002/admin>. The seeded user is `dev@milesroxas.com` / `test`.
 
 ## Checks
 
 CI runs these on every pull request.
 
 ```sh
-pnpm format:check   # oxfmt
-pnpm lint           # eslint (@payloadcms/eslint-config)
+pnpm lint           # biome check (format, lint, import order)
 pnpm typecheck
 pnpm test:unit
 pnpm test:int

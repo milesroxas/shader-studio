@@ -1,10 +1,9 @@
 import type { JSONField } from 'payload'
 
 import type { Effect, Parameter } from './effect.js'
-import type { EffectRegistry } from './registry.js'
-
 import { CAPTURE_SIDE, FRAME_MAX, RECIPE_VERSION, SEED_MAX } from './recipe.js'
-import { STILL_LIMIT, stillUseIds, type StillUses, withCustomUse } from './stills.js'
+import type { EffectRegistry } from './registry.js'
+import { STILL_LIMIT, type StillUses, stillUseIds, withCustomUse } from './stills.js'
 
 /**
  * A recipe as JSON Schema, for the look's `recipe` field. The admin never sees

@@ -1,13 +1,13 @@
 import {
   type EffectContract,
   parameterError,
-  type Surface,
   SURFACES,
+  type Surface,
   type Tuning,
 } from './effect.js'
 import { type LookGround, lookGround } from './ground.js'
 import { FRAME_MAX, type Snapshot } from './recipe.js'
-import { siteStillUses, type StillUses } from './stills.js'
+import { type StillUses, siteStillUses } from './stills.js'
 
 /**
  * A rendered file as a visual slot receives it: what the plugin copies off a
@@ -42,11 +42,11 @@ export const isPosterSource = (value: unknown): value is PosterMediaSource => {
   const poster = value as null | Partial<PosterMediaSource> | undefined
   return Boolean(
     poster &&
-    typeof poster.filename === 'string' &&
-    typeof poster.url === 'string' &&
-    poster.mimeType?.startsWith('image/') &&
-    poster.width &&
-    poster.height,
+      typeof poster.filename === 'string' &&
+      typeof poster.url === 'string' &&
+      poster.mimeType?.startsWith('image/') &&
+      poster.width &&
+      poster.height,
   )
 }
 

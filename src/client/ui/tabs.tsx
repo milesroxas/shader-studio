@@ -101,4 +101,4 @@ function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPr
   )
 }
 
-export { Tabs, TabsContent, TabsList, tabsListVariants, TabsTrigger, tabsTriggerVariants }
+export { Tabs, TabsContent, TabsList, TabsTrigger, tabsListVariants, tabsTriggerVariants }

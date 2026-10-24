@@ -11,7 +11,6 @@ import type { Still } from '../core/stills.js'
  * poster pair (`'poster'`, the look exactly as it runs, at its capture frame)
  * or one of the look's stills, by id.
  */
-// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 export type StillSelection = 'poster' | null | string
 
 /** One undo step: everything of the look an edit in the Studio can change together. */

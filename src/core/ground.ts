@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 
-import { type StudioGround, type Surface, SURFACES } from './effect.js'
+import { type StudioGround, SURFACES, type Surface } from './effect.js'
 
 /**
  * A look's own ground: the colour painted under the effect on each face, as

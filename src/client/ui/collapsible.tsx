@@ -1,9 +1,8 @@
 'use client'
 
-import type * as React from 'react'
-
 import { IconChevronRight } from '@tabler/icons-react'
 import { Collapsible as CollapsiblePrimitive } from 'radix-ui'
+import type * as React from 'react'
 
 import { cn } from './cn.js'
 

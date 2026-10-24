@@ -43,6 +43,7 @@ export function defineStudioEffect<T extends Tuning>(
 ): StudioEffectComponent {
   const erased = definition as unknown as StudioEffectDefinition
   const { id } = definition.contract
+  // biome-ignore lint/correctness/noComponentHookFactories: called once per module at load, so the component is as stable as the module
   const Effect: StudioEffectComponent = ({ children }) => {
     const prior = use(EffectsContext)
     const value = useMemo(() => ({ ...prior, [id]: erased }), [prior])

@@ -5,13 +5,12 @@ import { useEffect, useRef } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import type { BlendMode, Tuning } from '../core/effect.js'
-import type { CaptureOptions } from '../core/recipe.js'
-import type { StudioEffectDefinition } from './effects.js'
-import type { EffectScene } from './scenes.js'
-
 import { widestPlacement } from '../core/effect.js'
+import type { CaptureOptions } from '../core/recipe.js'
 import { STILL_QUALITY } from '../core/recipe.js'
+import type { StudioEffectDefinition } from './effects.js'
 import { loadScenes } from './effects.js'
+import type { EffectScene } from './scenes.js'
 
 export type CaptureInput = {
   capture: CaptureOptions

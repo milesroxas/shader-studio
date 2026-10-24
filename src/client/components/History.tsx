@@ -2,9 +2,8 @@
 
 import '../../styles/studio.css'
 
-import type { UIFieldClientComponent } from 'payload'
-
 import { toast } from '@payloadcms/ui'
+import type { UIFieldClientComponent } from 'payload'
 
 import { stillInputs, studioGround } from '../../core/index.js'
 import { useDraft, useGround } from '../draft.js'

@@ -6,9 +6,6 @@ import {
   type CollectionConfig,
   type Field,
 } from 'payload'
-
-import type { ResolvedStudioConfig } from './options.js'
-
 import {
   canonicalJSON,
   type Effect,
@@ -18,14 +15,15 @@ import {
   GROUND_HEX_MESSAGE,
   isGroundHex,
   recipeJsonSchema,
+  SURFACES,
   stillInputs,
   stillsJsonSchema,
-  SURFACES,
   validateRecipe,
   validateStills,
 } from './core/index.js'
 import { lookEndpoints } from './endpoints.js'
 import { recipeHash, storedRecipeHash, studioInput } from './hash.js'
+import type { ResolvedStudioConfig } from './options.js'
 import {
   component,
   EFFECT_FIELD,

@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest'
-
-import type { PublishedState } from './look-store.js'
-
 import { canonicalJSON, emptyRecipe, snapshotRecipe } from '../core/recipe.js'
 import { DEFAULT_STILL_USES, newStill } from '../core/stills.js'
 import { washEffect } from '../effects/wash/index.js'
+import type { PublishedState } from './look-store.js'
 import { draftKey, draftState, lookMatches, stillStatus } from './status.js'
 
 const E = washEffect

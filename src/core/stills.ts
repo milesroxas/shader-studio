@@ -3,8 +3,8 @@ import {
   type EffectContract,
   parameterError,
   type StudioGround,
-  type Surface,
   SURFACES,
+  type Surface,
   type Tuning,
   widestPlacement,
 } from './effect.js'
@@ -204,9 +204,9 @@ const isOutput = (value: unknown): value is Pick<PublishedStill, 'hash' | 'media
   const still = value as null | Partial<PublishedStill> | undefined
   return Boolean(
     still &&
-    isMediaId(still.media) &&
-    typeof still.hash === 'string' &&
-    /^[a-f0-9]{64}$/.test(still.hash),
+      isMediaId(still.media) &&
+      typeof still.hash === 'string' &&
+      /^[a-f0-9]{64}$/.test(still.hash),
   )
 }
 

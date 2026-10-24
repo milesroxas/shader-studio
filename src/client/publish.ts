@@ -1,20 +1,18 @@
 import type { useForm } from '@payloadcms/ui'
-
-import type { MediaLike } from '../options.js'
-import type { CaptureInput } from './capture.js'
-import type { Studio } from './config.js'
-import type { PublishedState } from './look-store.js'
-
 import { SURFACES } from '../core/effect.js'
 import { type LookGround, studioGround } from '../core/ground.js'
 import {
   POSTER_CAPTURE,
   type Recipe,
-  snapshotRecipe,
   STILL_UPLOAD_BUDGET,
+  snapshotRecipe,
   validateRecipe,
 } from '../core/recipe.js'
 import { type Still, stillLabel, validateStills } from '../core/stills.js'
+import type { MediaLike } from '../options.js'
+import type { CaptureInput } from './capture.js'
+import type { Studio } from './config.js'
+import type { PublishedState } from './look-store.js'
 import { stillShot } from './shot.js'
 import { draftState } from './status.js'
 import { sessionKey, studioStore } from './store.js'

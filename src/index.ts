@@ -2,15 +2,15 @@ export * from './core/index.js'
 export {
   type LookFieldClientProps,
   type SlotEffect,
-  studioLookField,
   type StudioLookFieldArgs,
+  studioLookField,
 } from './fields/look-field.js'
-export {
-  type LookPublishArgs,
-  type MediaLike,
-  type ShaderStudioPluginConfig,
-  type StudioClientConfig,
-  type StudioEffectRegistration,
+export type {
+  LookPublishArgs,
+  MediaLike,
+  ShaderStudioPluginConfig,
+  StudioClientConfig,
+  StudioEffectRegistration,
 } from './options.js'
 export {
   EFFECT_FIELD,
@@ -22,4 +22,4 @@ export {
   THUMBNAIL_FIELD,
 } from './paths.js'
 export { shaderStudioPlugin } from './plugin.js'
-export { lookUsage, type LookUse } from './usage.js'
+export { type LookUse, lookUsage } from './usage.js'

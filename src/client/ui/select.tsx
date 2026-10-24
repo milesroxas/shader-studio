@@ -1,9 +1,8 @@
 'use client'
 
-import type * as React from 'react'
-
 import { IconCheck, IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react'
 import { Select as SelectPrimitive } from 'radix-ui'
+import type * as React from 'react'
 
 import { cn } from './cn.js'
 

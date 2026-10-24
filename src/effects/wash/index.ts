@@ -105,7 +105,6 @@ export const washEffect = {
     octaves: Math.max(1, Math.min(Math.round(tuning.octaves), OCTAVE_CAPS[placement] ?? 2)),
   }),
   // Table order is the order the Studio lists starters and rows in.
-  /* eslint-disable perfectionist/sort-objects */
   looks: {
     dusk: look({
       description: 'Indigo into plum into apricot, drifting right. The default wash.',
@@ -157,7 +156,6 @@ export const washEffect = {
     vignette: range('Finish', 0, 2),
     opacity: unit('Finish'),
   },
-  /* eslint-enable perfectionist/sort-objects */
   placements: ['hero', 'block', 'card'],
   renderer: 'wash-1',
   seeded: true,
@@ -167,7 +165,7 @@ export type WashParameterKey = keyof typeof washEffect.parameters
 
 type WashDependency = Dependency<WashTuning>
 
-/* eslint-disable perfectionist/sort-objects -- rows read in the contract's order */
+// Rows read in the contract's order.
 const PARAMETERS: Record<WashParameterKey, ParameterCopy> = {
   scale: {
     description:
@@ -231,8 +229,6 @@ const PARAMETERS: Record<WashParameterKey, ParameterCopy> = {
     label: 'Opacity',
   },
 }
-
-/* eslint-enable perfectionist/sort-objects */
 
 const DEPENDENCIES: Partial<Record<WashParameterKey, WashDependency>> = {
   drift: {

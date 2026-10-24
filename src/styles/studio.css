@@ -16,11 +16,11 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' source(none);
 @import 'tw-animate-css';
-@source "../client";
+@source '../client';
 
 /* Polarity. Payload's admin stamps the visitor's theme on `<html>` as
    `data-theme`, so the `dark:` utilities read that and nothing else. */
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 /* Radix state variants, so a primitive can say `data-open:animate-in`. */
 @custom-variant data-open {

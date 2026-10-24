@@ -3,9 +3,6 @@
 import { useEffect, useSyncExternalStore } from 'react'
 
 import type { Effect } from '../core/effect.js'
-import type { LookUse } from '../usage.js'
-import type { Studio } from './config.js'
-
 import { type LookGround, lookGround } from '../core/ground.js'
 import { canonicalJSON, type Recipe, type Snapshot, snapshotRecipe } from '../core/recipe.js'
 import { type PublishedStill, publishedStills } from '../core/stills.js'
@@ -17,6 +14,8 @@ import {
   STILLS_FIELD,
   THUMBNAIL_FIELD,
 } from '../paths.js'
+import type { LookUse } from '../usage.js'
+import type { Studio } from './config.js'
 import { useStudio } from './config.js'
 
 export type { LookUse }

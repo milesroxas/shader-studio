@@ -1,8 +1,5 @@
 import { randomUUID } from 'node:crypto'
 import { APIError, type Config, type PayloadRequest } from 'payload'
-
-import type { MediaLike, ResolvedStudioConfig } from './options.js'
-
 import {
   CAPTURE_PIXEL_BUDGET,
   type CaptureOptions,
@@ -11,6 +8,7 @@ import {
   STILL_UPLOAD_BUDGET,
   studioGround,
 } from './core/index.js'
+import type { MediaLike, ResolvedStudioConfig } from './options.js'
 import { LIGHT_POSTER_FIELD, STILL_MEDIA_FIELD, THUMBNAIL_FIELD } from './paths.js'
 
 type Sharp = NonNullable<Config['sharp']>

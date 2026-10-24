@@ -1,9 +1,8 @@
 'use client'
 
-import type * as React from 'react'
-
 import { IconX } from '@tabler/icons-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
+import type * as React from 'react'
 
 import { cn } from './cn.js'
 

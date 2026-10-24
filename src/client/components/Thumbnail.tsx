@@ -1,8 +1,7 @@
 'use client'
 
-import type { DefaultCellComponentProps } from 'payload'
-
 import { Link, useConfig } from '@payloadcms/ui'
+import type { DefaultCellComponentProps } from 'payload'
 
 import { lookGround, studioGround } from '../../core/index.js'
 import { useStudio } from '../config.js'

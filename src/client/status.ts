@@ -1,9 +1,8 @@
 import type { Effect } from '../core/effect.js'
-import type { PublishedState } from './look-store.js'
-
 import { type LookGround, sameGround } from '../core/ground.js'
 import { canonicalJSON, type Recipe, snapshotRecipe } from '../core/recipe.js'
-import { sameStill, type Still, stillChanges } from '../core/stills.js'
+import { type Still, sameStill, stillChanges } from '../core/stills.js'
+import type { PublishedState } from './look-store.js'
 
 /**
  * The draft read against what is published, for every piece of the Studio
